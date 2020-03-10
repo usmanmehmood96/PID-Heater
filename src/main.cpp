@@ -27,9 +27,10 @@ unsigned long lastTempUpdate; //tracks clock time of last temp update
 
 //call repeatedly in loop, only updates after a certain time interval
 //returns true if update happened
-bool updateTemperature() 
+bool updateTemperature()
 {
-  if ((millis() - lastTempUpdate) > TEMP_READ_DELAY) {
+  if ((millis() - lastTempUpdate) > TEMP_READ_DELAY)
+  {
     temperature = analogRead(TEMP_PROBE_PIN); //get temp reading
     lastTempUpdate = millis();
     return true;
@@ -37,7 +38,7 @@ bool updateTemperature()
   return false;
 }
 
-void setup() 
+void setup()
 {
   pinMode(POT_PIN, INPUT);
   pinMode(OUTPUT_PIN, OUTPUT);
@@ -50,7 +51,6 @@ void setup()
   //set PID update interval to 4000ms
   myPID.setTimeStep(4000);
 }
-
 
 void loop()
 {
