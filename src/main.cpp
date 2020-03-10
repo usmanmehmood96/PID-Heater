@@ -11,7 +11,7 @@
 
 #define TEMP_READ_DELAY 800 //can only read digital temp sensor every ~750ms
 
-//pid settings and gains
+//pid settings and gainsx
 #define OUTPUT_MIN 0
 #define OUTPUT_MAX 255
 #define KP .12
@@ -40,6 +40,8 @@ bool updateTemperature()
 
 void setup()
 {
+  Blynk.begin(auth, ssid, pass);
+
   pinMode(POT_PIN, INPUT);
   pinMode(OUTPUT_PIN, OUTPUT);
   pinMode(LED_PIN, OUTPUT);
@@ -54,9 +56,24 @@ void setup()
 
 void loop()
 {
+  Blynk.run();
   updateTemperature();
   setPoint = analogRead(POT_PIN);
   myPID.run(); //call every loop, updates automatically at certain time interval
   ledcWrite(0, outputVal);
   digitalWrite(LED_PIN, myPID.atSetPoint(1)); //light up LED when we're at setpoint +-1 degree
+}
+
+
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <BlynkSimpleEsp32.h>
+
+char auth[] = "YourAuthToken";
+char ssid[] = "YourNetworkName";
+char pass[] = "YourPassword";
+
+BLYNK_WRITE(V1)
+{
+  int pinValue = param.asInt();
 }
