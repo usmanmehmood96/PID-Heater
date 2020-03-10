@@ -37,7 +37,6 @@ bool updateTemperature()
   return false;
 }
 
-
 void setup() 
 {
   pinMode(POT_PIN, INPUT);
