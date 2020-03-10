@@ -1,7 +1,13 @@
 #include <Arduino.h>
 #include <AutoPID.h>
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <BlynkSimpleEsp32.h>
 
-//#include <OneWire.h>
+char auth[] = "YourAuthToken";
+char ssid[] = "YourNetworkName";
+char pass[] = "YourPassword";
+
 
 //pins
 #define POT_PIN 35
@@ -9,7 +15,7 @@
 #define TEMP_PROBE_PIN 32
 #define LED_PIN 6
 
-#define TEMP_READ_DELAY 800 //can only read digital temp sensor every ~750ms
+#define TEMP_READ_DELAY 800
 
 //pid settings and gainsx
 #define OUTPUT_MIN 0
@@ -63,15 +69,6 @@ void loop()
   ledcWrite(0, outputVal);
   digitalWrite(LED_PIN, myPID.atSetPoint(1)); //light up LED when we're at setpoint +-1 degree
 }
-
-
-#include <WiFi.h>
-#include <WiFiClient.h>
-#include <BlynkSimpleEsp32.h>
-
-char auth[] = "YourAuthToken";
-char ssid[] = "YourNetworkName";
-char pass[] = "YourPassword";
 
 BLYNK_WRITE(V1)
 {
