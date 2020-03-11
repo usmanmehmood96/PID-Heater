@@ -1,5 +1,7 @@
 #include <Arduino.h>
+
 #include <AutoPID.h>
+
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <BlynkSimpleEsp32.h>
@@ -17,11 +19,11 @@ char pass[] = "YourPassword";
 #define TEMP_READ_DELAY 800
 
 //pid settings and gainsx
-#define OUTPUT_MIN 0
-#define OUTPUT_MAX 255
-#define KP .12
-#define KI .0003
-#define KD 0
+double OUTPUT_MIN = 0;
+double OUTPUT_MAX = 255;
+double KP = .12;
+double KI = .0003;
+double KD = 0;
 
 double temperature, setPoint, outputVal;
 
@@ -67,9 +69,4 @@ void loop()
   myPID.run(); //call every loop, updates automatically at certain time interval
   ledcWrite(0, outputVal);
   digitalWrite(LED_PIN, myPID.atSetPoint(1)); //light up LED when we're at setpoint +-1 degree
-}
-
-BLYNK_WRITE(V1)
-{
-  int pinValue = param.asInt();
 }
