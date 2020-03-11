@@ -8,7 +8,6 @@ char auth[] = "YourAuthToken";
 char ssid[] = "YourNetworkName";
 char pass[] = "YourPassword";
 
-
 //pins
 #define POT_PIN 35
 #define OUTPUT_PIN 36
