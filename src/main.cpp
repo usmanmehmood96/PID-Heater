@@ -12,10 +12,10 @@ char pass[] = "YourPassword";
 #include <AutoPID.h>
 
 //pins
-#define POT_PIN 35
-#define OUTPUT_PIN 36
-#define TEMP_PROBE_PIN 32
-#define LED_PIN 6
+#define POT_PIN 36
+#define OUTPUT_PIN 39
+#define TEMP_PROBE_PIN 34
+#define LED_PIN 35
 #define TEMP_READ_DELAY 800
 
 //pid settings and gains
