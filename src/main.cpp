@@ -1,24 +1,24 @@
 #include <Arduino.h>
 
-#include <AutoPID.h>
-
+//--------------------------------------------------
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <BlynkSimpleEsp32.h>
-
 char auth[] = "YourAuthToken";
 char ssid[] = "YourNetworkName";
 char pass[] = "YourPassword";
+//--------------------------------------------------
+
+#include <AutoPID.h>
 
 //pins
 #define POT_PIN 35
 #define OUTPUT_PIN 36
 #define TEMP_PROBE_PIN 32
 #define LED_PIN 6
-
 #define TEMP_READ_DELAY 800
 
-//pid settings and gainsx
+//pid settings and gains
 double OUTPUT_MIN = 0;
 double OUTPUT_MAX = 255;
 double KP = .12;
@@ -29,21 +29,15 @@ double temperature, setPoint, outputVal;
 
 //input/output variables passed by reference, so they are updated automatically
 AutoPID myPID(&temperature, &setPoint, &outputVal, OUTPUT_MIN, OUTPUT_MAX, KP, KI, KD);
-
 unsigned long lastTempUpdate; //tracks clock time of last temp update
 
-//call repeatedly in loop, only updates after a certain time interval
-//returns true if update happened
-bool updateTemperature()
-{
-  if ((millis() - lastTempUpdate) > TEMP_READ_DELAY)
-  {
-    temperature = analogRead(TEMP_PROBE_PIN); //get temp reading
-    lastTempUpdate = millis();
-    return true;
-  }
-  return false;
-}
+//call repeatedly in loop, only updates after a certain time interval, returns true if update happened
+bool updateTemperature();
+
+int potRead();
+int previousHardwPotValue = 0;
+int previousBlynkPotValue = 0;
+int V1_value = 0;
 
 void setup()
 {
@@ -65,8 +59,37 @@ void loop()
 {
   Blynk.run();
   updateTemperature();
-  setPoint = analogRead(POT_PIN);
+  //setPoint = analogRead(POT_PIN);
+  setPoint = potRead();
   myPID.run(); //call every loop, updates automatically at certain time interval
   ledcWrite(0, outputVal);
   digitalWrite(LED_PIN, myPID.atSetPoint(1)); //light up LED when we're at setpoint +-1 degree
+}
+
+BLYNK_WRITE(V1)
+{
+  V1_value = param.asInt();
+}
+
+int potRead()
+{
+  if (analogRead(POT_PIN) >= 20 + previousHardwPotValue || analogRead(POT_PIN) <= previousHardwPotValue - 20)
+  {
+    previousHardwPotValue = analogRead(POT_PIN);
+  } else if (V1_value >= 20 + previousBlynkPotValue || V1_value <= previousBlynkPotValue - 20)
+  {
+    previousBlynkPotValue = V1_value;
+  }
+  return previousHardwPotValue;
+}
+
+bool updateTemperature()
+{
+  if ((millis() - lastTempUpdate) > TEMP_READ_DELAY)
+  {
+    temperature = analogRead(TEMP_PROBE_PIN); //get temp reading
+    lastTempUpdate = millis();
+    return true;
+  }
+  return false;
 }
