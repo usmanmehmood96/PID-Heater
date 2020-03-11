@@ -78,13 +78,13 @@ int potRead()
   if (analogRead(POT_PIN) >= 20 + previousHardwPotValue || analogRead(POT_PIN) <= previousHardwPotValue - 20)
   {
     previousHardwPotValue = analogRead(POT_PIN);
-    previousPotValue = previousHardwPotValue;
+    previousPotValue = previousHardwPotValue; // Makes Blynk pot the latest used value
     return previousHardwPotValue;
   }
   else if (V1_value >= 20 + previousBlynkPotValue || V1_value <= previousBlynkPotValue - 20)
   {
     previousBlynkPotValue = V1_value;
-    previousPotValue = previousBlynkPotValue;
+    previousPotValue = previousBlynkPotValue; // Makes Hardware pot the latest used value
     return previousBlynkPotValue;
   }
   else
