@@ -37,6 +37,7 @@ bool updateTemperature();
 int potRead();
 int previousHardwPotValue = 0;
 int previousBlynkPotValue = 0;
+int previousPotValue = 0;
 int V1_value = 0;
 
 void setup()
@@ -73,14 +74,23 @@ BLYNK_WRITE(V1)
 
 int potRead()
 {
+  // if the hardware pot is changed, it will return that value, if the Blynk pot is changed, it will return that value
   if (analogRead(POT_PIN) >= 20 + previousHardwPotValue || analogRead(POT_PIN) <= previousHardwPotValue - 20)
   {
     previousHardwPotValue = analogRead(POT_PIN);
-  } else if (V1_value >= 20 + previousBlynkPotValue || V1_value <= previousBlynkPotValue - 20)
+    previousPotValue = previousHardwPotValue;
+    return previousHardwPotValue;
+  }
+  else if (V1_value >= 20 + previousBlynkPotValue || V1_value <= previousBlynkPotValue - 20)
   {
     previousBlynkPotValue = V1_value;
+    previousPotValue = previousBlynkPotValue;
+    return previousBlynkPotValue;
   }
-  return previousHardwPotValue;
+  else
+  {
+    return previousPotValue;
+  }
 }
 
 bool updateTemperature()
