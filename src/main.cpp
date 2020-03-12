@@ -1,5 +1,15 @@
 #include <Arduino.h>
 
+// IO Pins
+//--------------------------------------------------
+#define POT_PIN 36
+#define OUTPUT_PIN 39
+#define TEMP_PROBE_PIN 34
+#define LED_PIN 35
+#define TEMP_READ_DELAY 800
+//--------------------------------------------------
+
+// Blynk Configurations
 //--------------------------------------------------
 #include <WiFi.h>
 #include <WiFiClient.h>
@@ -9,6 +19,7 @@ char ssid[] = "YourNetworkName";
 char pass[] = "YourPassword";
 //--------------------------------------------------
 
+// MAX6675 and LCD Configurations
 //--------------------------------------------------
 #include <max6675.h>
 unsigned const char thermoDO = 4;
@@ -23,17 +34,9 @@ uint8_t degree[8]  = {140,146,146,140,128,128,128,128};
 #include <SPI.h>
 //--------------------------------------------------
 
+// AutoPID Configuartions
 //--------------------------------------------------
 #include <AutoPID.h>
-
-//pins
-#define POT_PIN 36
-#define OUTPUT_PIN 39
-#define TEMP_PROBE_PIN 34
-#define LED_PIN 35
-#define TEMP_READ_DELAY 800
-
-//pid settings and gains
 double OUTPUT_MIN = 0;
 double OUTPUT_MAX = 255;
 double KP = .12;
@@ -41,14 +44,13 @@ double KI = .0003;
 double KD = 0;
 
 double temperature, setPoint, outputVal;
-
-//input/output variables passed by reference, so they are updated automatically
 AutoPID myPID(&temperature, &setPoint, &outputVal, OUTPUT_MIN, OUTPUT_MAX, KP, KI, KD);
-unsigned long lastTempUpdate; //tracks clock time of last temp update
+unsigned long lastTempUpdate;
 
-//call repeatedly in loop, only updates after a certain time interval, returns true if update happened
+// Call repeatedly in loop, only updates after a certain time interval, returns true if update happened
 bool updateTemperature();
 
+// For reading software pot and hardware pot
 int potRead();
 int previousHardwPotValue = 0;
 int previousBlynkPotValue = 0;
@@ -86,13 +88,11 @@ void loop()
   lcd.setCursor(0, 0);
 
   updateTemperature();
-  //setPoint = analogRead(POT_PIN);
   setPoint = potRead();
   myPID.run(); //call every loop, updates automatically at certain time interval
   ledcWrite(0, outputVal);
   digitalWrite(LED_PIN, myPID.atSetPoint(1)); //light up LED when we're at setpoint +-1 degree
   
-  // Write current temp on LCD
   lcd.setCursor(0,1);
   lcd.print(thermocouple.readCelsius());
 }
