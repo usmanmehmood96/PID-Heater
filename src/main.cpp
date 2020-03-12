@@ -9,6 +9,21 @@ char ssid[] = "YourNetworkName";
 char pass[] = "YourPassword";
 //--------------------------------------------------
 
+//--------------------------------------------------
+#include <max6675.h>
+unsigned const char thermoDO = 4;
+unsigned const char thermoCS = 5;
+unsigned const char thermoCLK = 6;
+MAX6675 thermocouple;
+
+#include <LiquidCrystal.h>
+LiquidCrystal lcd(8, 9, 10, 11, 12, 13);
+uint8_t degree[8]  = {140,146,146,140,128,128,128,128};
+#include <Wire.h>
+#include <SPI.h>
+//--------------------------------------------------
+
+//--------------------------------------------------
 #include <AutoPID.h>
 
 //pins
@@ -43,6 +58,11 @@ int V1_value = 0;
 void setup()
 {
   Blynk.begin(auth, ssid, pass);
+  Serial.begin(9600);
+  thermocouple.begin(thermoCLK, thermoCS, thermoDO);
+
+  lcd.begin(16, 2);
+  lcd.createChar(0, degree);
 
   pinMode(POT_PIN, INPUT);
   pinMode(OUTPUT_PIN, OUTPUT);
@@ -50,6 +70,8 @@ void setup()
   ledcAttachPin(TEMP_PROBE_PIN, 0);
   ledcSetup(0, 5000, 8);
 
+  delay(500);
+  
   //if temperature is more than 4 degrees below or above setpoint, OUTPUT will be set to min or max respectively
   myPID.setBangBang(4);
   //set PID update interval to 4000ms
