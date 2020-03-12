@@ -29,7 +29,7 @@ MAX6675 thermocouple;
 
 #include <LiquidCrystal.h>
 LiquidCrystal lcd(8, 9, 10, 11, 12, 13);
-uint8_t degree[8]  = {140,146,146,140,128,128,128,128};
+uint8_t degree[8] = {140, 146, 146, 140, 128, 128, 128, 128};
 #include <Wire.h>
 #include <SPI.h>
 //--------------------------------------------------
@@ -92,8 +92,8 @@ void loop()
   myPID.run(); //call every loop, updates automatically at certain time interval
   ledcWrite(0, outputVal);
   digitalWrite(LED_PIN, myPID.atSetPoint(1)); //light up LED when we're at setpoint +-1 degree
-  
-  lcd.setCursor(0,1);
+
+  lcd.setCursor(0, 1);
   lcd.print(thermocouple.readCelsius());
 }
 
