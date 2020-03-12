@@ -67,11 +67,11 @@ void setup()
   pinMode(POT_PIN, INPUT);
   pinMode(OUTPUT_PIN, OUTPUT);
   pinMode(LED_PIN, OUTPUT);
-  ledcAttachPin(TEMP_PROBE_PIN, 0);
+  ledcAttachPin(OUTPUT_PIN, 0);
   ledcSetup(0, 5000, 8);
 
   delay(500);
-  
+
   //if temperature is more than 4 degrees below or above setpoint, OUTPUT will be set to min or max respectively
   myPID.setBangBang(4);
   //set PID update interval to 4000ms
@@ -81,12 +81,20 @@ void setup()
 void loop()
 {
   Blynk.run();
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+
   updateTemperature();
   //setPoint = analogRead(POT_PIN);
   setPoint = potRead();
   myPID.run(); //call every loop, updates automatically at certain time interval
   ledcWrite(0, outputVal);
   digitalWrite(LED_PIN, myPID.atSetPoint(1)); //light up LED when we're at setpoint +-1 degree
+  
+  // Write current temp on LCD
+  lcd.setCursor(0,1);
+  lcd.print(thermocouple.readCelsius());
 }
 
 BLYNK_WRITE(V1)
@@ -119,7 +127,7 @@ bool updateTemperature()
 {
   if ((millis() - lastTempUpdate) > TEMP_READ_DELAY)
   {
-    temperature = analogRead(TEMP_PROBE_PIN); //get temp reading
+    temperature = analogRead(thermocouple.readCelsius());
     lastTempUpdate = millis();
     return true;
   }
