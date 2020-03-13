@@ -21,9 +21,9 @@ char pass[] = "YourPassword";
 // MAX6675 and LCD Configurations
 //--------------------------------------------------
 #include <max6675.h>
-#define THERMO_DO 34
-#define THERMO_CS 35
-#define THERMO_CLK 32
+#define THERMO_DO 34 // Serial Data Out
+#define THERMO_CS 35 // Serial Chip Select
+#define THERMO_CLK 32 // Serial Clock
 MAX6675 thermocouple;
 
 #include <LiquidCrystal.h>
