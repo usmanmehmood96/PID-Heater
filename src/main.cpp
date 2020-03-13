@@ -4,8 +4,7 @@
 //--------------------------------------------------
 #define POT_PIN 36
 #define OUTPUT_PIN 39
-#define TEMP_PROBE_PIN 34
-#define LED_PIN 35
+#define LED_PIN 33
 #define TEMP_READ_DELAY 800
 //--------------------------------------------------
 
@@ -22,9 +21,9 @@ char pass[] = "YourPassword";
 // MAX6675 and LCD Configurations
 //--------------------------------------------------
 #include <max6675.h>
-unsigned const char thermoDO = 4;
-unsigned const char thermoCS = 5;
-unsigned const char thermoCLK = 6;
+#define THERMO_DO 34
+#define THERMO_CS 35
+#define THERMO_CLK 32
 MAX6675 thermocouple;
 
 #include <LiquidCrystal.h>
@@ -61,7 +60,7 @@ void setup()
 {
   Blynk.begin(auth, ssid, pass);
   Serial.begin(9600);
-  thermocouple.begin(thermoCLK, thermoCS, thermoDO);
+  thermocouple.begin(THERMO_CLK, THERMO_CS, THERMO_DO);
 
   lcd.begin(16, 2);
   lcd.createChar(0, degree);
