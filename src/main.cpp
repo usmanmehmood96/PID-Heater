@@ -88,7 +88,7 @@ void loop()
 
   updateTemperature();
   setPoint = potRead();
-  myPID.run(); //call every loop, updates automatically at certain time interval
+  myPID.run();
   ledcWrite(0, outputVal);
   digitalWrite(LED_PIN, myPID.atSetPoint(1)); //light up LED when we're at setpoint +-1 degree
 
